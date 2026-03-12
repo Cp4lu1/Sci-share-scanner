@@ -1,13 +1,13 @@
+
 "use client";
 
-import { useState, useEffect } from "react";
-import { Search, Loader2, Grid, Filter, RefreshCcw, LayoutGrid, Info } from "lucide-react";
+import { useState } from "react";
+import { Search, Loader2, Grid, Filter, RefreshCcw, LayoutGrid, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ImageCard, ImageStatus } from "./ImageCard";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { generatePHash, compareHashes } from "@/lib/phash";
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface ScannedImage {
@@ -40,16 +40,13 @@ export function ImageScanner() {
       status: "normal",
     }));
 
-    // Simulate scanning and hashing
     const processed: ScannedImage[] = [];
     for (let i = 0; i < initialImages.length; i++) {
       const imgData = initialImages[i];
-      setProgress(((i + 1) / initialImages.length) * 50); // First 50% for loading/hashing
+      setProgress(((i + 1) / initialImages.length) * 50);
 
       try {
         const hash = await generatePHash(imgData.url);
-        
-        // Get dimensions
         const size = await new Promise<{ w: number; h: number }>((resolve) => {
           const img = new Image();
           img.onload = () => resolve({ w: img.width, h: img.height });
@@ -63,16 +60,13 @@ export function ImageScanner() {
           height: size.h,
         });
       } catch (err) {
-        console.error("Error hashing image:", imgData.id);
         processed.push(imgData);
       }
     }
 
-    // Similarity Analysis (Next 50% of progress)
     const analyzed = [...processed];
     for (let i = 0; i < analyzed.length; i++) {
       setProgress(50 + ((i + 1) / analyzed.length) * 50);
-      
       for (let j = 0; j < analyzed.length; j++) {
         if (i === j) continue;
         const imgA = analyzed[i];
@@ -80,9 +74,7 @@ export function ImageScanner() {
 
         if (imgA.pHash && imgB.pHash) {
           const similarity = compareHashes(imgA.pHash, imgB.pHash);
-          
           if (similarity > 0.9) {
-            // Check for transformations
             const ratioA = imgA.width / imgA.height;
             const ratioB = imgB.width / imgB.height;
             const ratioDiff = Math.abs(ratioA - ratioB);
@@ -108,83 +100,74 @@ export function ImageScanner() {
   const transformedCount = images.filter(img => img.status === 'transformed').length;
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-primary font-headline">Scanner Overview</h1>
-          <p className="text-muted-foreground mt-1">
-            Analyzing page assets for scientific data integrity.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            onClick={() => setImages([])}
-            disabled={isScanning || images.length === 0}
-            className="border-primary/20 text-primary hover:bg-primary/5"
-          >
-            <RefreshCcw className="mr-2 h-4 w-4" />
-            Clear
-          </Button>
+    <div className="space-y-4 animate-in fade-in duration-500">
+      <div className="space-y-3">
+        <div className="flex flex-col gap-2">
           <Button
             onClick={startScan}
             disabled={isScanning}
-            className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
+            className="w-full bg-primary hover:bg-primary/90 shadow-md py-6 text-sm font-bold"
           >
             {isScanning ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <Search className="mr-2 h-4 w-4" />
             )}
-            {isScanning ? "Scanning Assets..." : "Scan Active Page"}
+            {isScanning ? "Analyzing Page Content..." : "Scan Active Tab"}
           </Button>
+          {images.length > 0 && !isScanning && (
+            <Button
+              variant="outline"
+              onClick={() => setImages([])}
+              className="w-full h-8 text-[11px] font-bold uppercase tracking-wider text-muted-foreground"
+            >
+              <RefreshCcw className="mr-2 h-3 w-3" />
+              Reset Results
+            </Button>
+          )}
         </div>
       </div>
 
       {isScanning && (
-        <div className="space-y-3 bg-white p-6 rounded-xl border border-primary/10 shadow-sm">
-          <div className="flex justify-between text-sm font-medium">
-            <span className="flex items-center text-primary">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Processing Image Perceptual Hashes
-            </span>
-            <span className="font-mono">{Math.round(progress)}%</span>
+        <div className="space-y-2 p-3 rounded-lg border border-primary/20 bg-primary/5">
+          <div className="flex justify-between text-[10px] font-bold uppercase tracking-tighter text-primary">
+            <span>pHash Comparison</span>
+            <span>{Math.round(progress)}%</span>
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress value={progress} className="h-1.5" />
         </div>
       )}
 
       {images.length > 0 && !isScanning && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Alert className="bg-white border-primary/10">
-            <LayoutGrid className="h-4 w-4 text-primary" />
-            <AlertTitle className="text-xs uppercase font-bold text-muted-foreground">Scanned Assets</AlertTitle>
-            <AlertDescription className="text-2xl font-bold text-primary">{images.length}</AlertDescription>
-          </Alert>
-          <Alert className="bg-destructive/5 border-destructive/10">
-            <Filter className="h-4 w-4 text-destructive" />
-            <AlertTitle className="text-xs uppercase font-bold text-destructive">Duplicates Detected</AlertTitle>
-            <AlertDescription className="text-2xl font-bold text-destructive">{duplicatesCount}</AlertDescription>
-          </Alert>
-          <Alert className="bg-yellow-50 border-yellow-200">
-            <Grid className="h-4 w-4 text-yellow-600" />
-            <AlertTitle className="text-xs uppercase font-bold text-yellow-700">Transformations</AlertTitle>
-            <AlertDescription className="text-2xl font-bold text-yellow-600">{transformedCount}</AlertDescription>
-          </Alert>
+        <div className="grid grid-cols-3 gap-2">
+          <div className="flex flex-col items-center p-2 rounded-lg bg-muted/50 border border-border/50">
+            <LayoutGrid className="h-3 w-3 text-muted-foreground mb-1" />
+            <span className="text-lg font-bold leading-none">{images.length}</span>
+            <span className="text-[8px] uppercase font-bold text-muted-foreground mt-1">Found</span>
+          </div>
+          <div className="flex flex-col items-center p-2 rounded-lg bg-destructive/5 border border-destructive/10">
+            <Filter className="h-3 w-3 text-destructive mb-1" />
+            <span className="text-lg font-bold text-destructive leading-none">{duplicatesCount}</span>
+            <span className="text-[8px] uppercase font-bold text-destructive mt-1">Duplicates</span>
+          </div>
+          <div className="flex flex-col items-center p-2 rounded-lg bg-yellow-50 border border-yellow-200">
+            <Grid className="h-3 w-3 text-yellow-600 mb-1" />
+            <span className="text-lg font-bold text-yellow-600 leading-none">{transformedCount}</span>
+            <span className="text-[8px] uppercase font-bold text-yellow-700 mt-1">Transformed</span>
+          </div>
         </div>
       )}
 
       {images.length > 0 && (
-        <div className="space-y-6">
+        <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <Separator className="flex-1" />
-            <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground px-4">
-              Results Gallery
+            <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">
+              Asset Gallery
             </span>
-            <Separator className="flex-1" />
+            <div className="h-px bg-border flex-1" />
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 gap-3">
             {images.map((img) => (
               <ImageCard key={img.id} {...img} />
             ))}
@@ -193,18 +176,12 @@ export function ImageScanner() {
       )}
 
       {!isScanning && images.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 px-6 rounded-3xl border-2 border-dashed border-primary/10 bg-white/50">
-          <div className="p-4 rounded-full bg-primary/5 mb-4">
-            <Search className="h-10 w-10 text-primary/30" />
-          </div>
-          <h3 className="text-xl font-bold text-primary/80">No scan results found</h3>
-          <p className="text-muted-foreground text-center max-w-sm mt-2">
-            Click the "Scan Active Page" button to begin analyzing images for duplicates and modifications.
+        <div className="flex flex-col items-center justify-center py-10 px-4 rounded-xl border border-dashed border-border bg-muted/10">
+          <Search className="h-8 w-8 text-muted-foreground/30 mb-3" />
+          <h3 className="text-sm font-bold text-foreground/80 text-center leading-tight">No data detected</h3>
+          <p className="text-[11px] text-muted-foreground text-center mt-2 max-w-[200px]">
+            The scanner will analyze all visual assets in the current tab for integrity.
           </p>
-          <div className="mt-8 flex items-center gap-4 text-xs text-muted-foreground bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
-            <Info className="h-3 w-3" />
-            <span>Scanning uses pHash analysis for robust detection</span>
-          </div>
         </div>
       )}
     </div>
