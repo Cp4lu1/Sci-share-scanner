@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "img1",
+      "description": "Lab Equipment Original",
+      "imageUrl": "https://picsum.photos/seed/sci1/800/600",
+      "imageHint": "science laboratory"
+    },
+    {
+      "id": "img2",
+      "description": "Lab Equipment Duplicate",
+      "imageUrl": "https://picsum.photos/seed/sci1/800/600",
+      "imageHint": "science laboratory"
+    },
+    {
+      "id": "img3",
+      "description": "Data Plot Standard",
+      "imageUrl": "https://picsum.photos/seed/sci2/600/400",
+      "imageHint": "data graph"
+    },
+    {
+      "id": "img4",
+      "description": "Data Plot Widened",
+      "imageUrl": "https://picsum.photos/seed/sci2/1200/400",
+      "imageHint": "data graph"
+    },
+    {
+      "id": "img5",
+      "description": "Microscope View",
+      "imageUrl": "https://picsum.photos/seed/sci3/500/500",
+      "imageHint": "microscope cell"
+    },
+    {
+      "id": "img6",
+      "description": "Chemical Structure",
+      "imageUrl": "https://picsum.photos/seed/sci4/400/300",
+      "imageHint": "chemical molecule"
+    }
+  ]
 }
