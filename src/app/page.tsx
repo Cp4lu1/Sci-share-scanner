@@ -1,49 +1,57 @@
-
 "use client";
 
 import { ImageScanner } from "@/components/scanner/ImageScanner";
-import { Shield, Settings, Bell, ExternalLink, Info } from "lucide-react";
+import { Shield, Settings, Bell, ExternalLink, Info, Globe } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
   return (
-    <div className="flex items-start justify-center min-h-screen bg-slate-100/50 p-4 md:p-8">
-      {/* Simulation of a Chrome Extension Popup Window */}
-      <Card className="w-full max-w-[400px] h-[600px] flex flex-col shadow-2xl border-border/50 overflow-hidden bg-white">
+    <div className="flex items-center justify-center min-h-screen bg-slate-200/40 p-0 md:p-4">
+      {/* 
+        This Card represents the actual dimensions of the Chrome Extension Popup.
+        In a real extension, the 'html' and 'body' would be sized to these dimensions.
+      */}
+      <Card className="w-[400px] h-[600px] flex flex-col shadow-xl border-none overflow-hidden bg-white rounded-none md:rounded-xl">
         
         {/* Extension Header */}
-        <header className="p-4 border-b bg-primary flex items-center justify-between">
+        <header className="p-4 border-b bg-slate-900 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
-            <div className="bg-white/20 p-1.5 rounded-md">
+            <div className="bg-primary p-1.5 rounded-lg shadow-inner">
               <Shield className="h-5 w-5 text-white" />
             </div>
-            <h1 className="text-white font-bold tracking-tight text-sm">
-              SCI-SHARE <span className="font-normal opacity-80">SCANNER</span>
-            </h1>
+            <div>
+              <h1 className="text-white font-extrabold tracking-tight text-xs leading-none">
+                SCI-SHARE <span className="text-primary">SCANNER</span>
+              </h1>
+              <p className="text-[9px] text-slate-400 font-medium mt-0.5 uppercase tracking-tighter">Integrity Suite</p>
+            </div>
           </div>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/10">
-              <Settings className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/10">
-              <Bell className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-white hover:bg-white/5">
+              <Settings className="h-3.5 w-3.5" />
             </Button>
           </div>
         </header>
 
         {/* Extension Content - Scrollable area */}
-        <main className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto p-4 bg-slate-50/50">
           <div className="space-y-4">
-            <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/40">
-              <div className="flex items-center gap-2">
-                <Info className="h-4 w-4 text-primary" />
-                <span className="text-[11px] font-medium text-muted-foreground">Active Tab: Research Journal...</span>
+            {/* Active Context Status */}
+            <div className="flex items-center justify-between bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm">
+              <div className="flex items-center gap-2 overflow-hidden">
+                <div className="bg-green-100 p-1 rounded-md shrink-0">
+                  <Globe className="h-3 w-3 text-green-600" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter leading-none">Scanning Site</span>
+                  <span className="text-[11px] font-medium text-slate-700 truncate">nature.com/articles/s41586...</span>
+                </div>
               </div>
-              <Button variant="ghost" size="sm" className="h-6 text-[10px] px-2">
-                <ExternalLink className="h-3 w-3 mr-1" />
-                Details
+              <Button variant="outline" size="sm" className="h-6 text-[9px] px-2 font-bold bg-slate-50 border-slate-200">
+                <ExternalLink className="h-2.5 w-2.5 mr-1" />
+                DASHBOARD
               </Button>
             </div>
 
@@ -52,16 +60,16 @@ export default function Home() {
         </main>
 
         {/* Extension Footer */}
-        <footer className="p-3 border-t bg-muted/20">
-          <div className="flex items-center justify-between text-[10px] text-muted-foreground font-medium">
-            <span>V1.0.0 Stable</span>
-            <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1">
-                <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
-                Connected
-              </span>
+        <footer className="p-3 border-t bg-white shrink-0">
+          <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+            <div className="flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
+              <span>v1.0.0-PRO</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <button className="hover:text-primary transition-colors">Documentation</button>
               <Separator orientation="vertical" className="h-3" />
-              <button className="hover:text-primary transition-colors">Help Center</button>
+              <button className="hover:text-primary transition-colors">Report Bug</button>
             </div>
           </div>
         </footer>
