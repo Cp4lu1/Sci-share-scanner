@@ -3,11 +3,18 @@
   "name": "Sci-Share Scanner",
   "version": "1.0.0",
   "description": "Advanced image analysis and duplicate detection for scientific assets.",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab"],
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
   },
   "icons": {
-    "128": "icon.png"
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
   }
 }
