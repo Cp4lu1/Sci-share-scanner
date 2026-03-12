@@ -1,73 +1,80 @@
 "use client";
 
 import { ImageScanner } from "@/components/scanner/ImageScanner";
-import { Shield, Settings, ExternalLink, Globe } from "lucide-react";
+import { Shield, Settings, ExternalLink, Globe, LayoutPanelRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
   return (
     /* 
-      The root container is designed to fill the extension popup's viewport (400x600).
+      The extension popup container. 
+      Width is optimized for a clean side-aligned feel (380px).
+      Height is set to max standard (600px).
     */
-    <div className="w-[400px] h-[600px] flex flex-col overflow-hidden bg-white">
+    <div className="w-[380px] h-[600px] flex flex-col overflow-hidden bg-white shadow-2xl border-l border-slate-200">
       
-      {/* Extension Header */}
-      <header className="p-4 border-b bg-slate-900 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="bg-primary p-1.5 rounded-lg shadow-inner">
-            <Shield className="h-5 w-5 text-white" />
+      {/* Extension Header - Professional Dark Theme */}
+      <header className="px-4 py-3 bg-slate-900 flex items-center justify-between shrink-0 border-b border-white/10">
+        <div className="flex items-center gap-2.5">
+          <div className="bg-primary p-1.5 rounded-md shadow-[0_0_15px_rgba(var(--primary),0.3)]">
+            <Shield className="h-4.5 w-4.5 text-white" />
           </div>
           <div>
-            <h1 className="text-white font-extrabold tracking-tight text-xs leading-none">
+            <h1 className="text-white font-black tracking-tight text-[11px] leading-none">
               SCI-SHARE <span className="text-primary">SCANNER</span>
             </h1>
-            <p className="text-[9px] text-slate-400 font-medium mt-0.5 uppercase tracking-tighter">Integrity Suite</p>
+            <p className="text-[8px] text-slate-400 font-bold mt-0.5 uppercase tracking-widest">Integrity Verification</p>
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-white hover:bg-white/5">
-            <Settings className="h-3.5 w-3.5" />
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white hover:bg-white/5">
+            <Settings className="h-4 w-4" />
           </Button>
         </div>
       </header>
 
-      {/* Extension Content - Scrollable area */}
-      <main className="flex-1 overflow-y-auto p-4 bg-slate-50/50">
-        <div className="space-y-4">
-          {/* Active Context Status */}
-          <div className="flex items-center justify-between bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm">
-            <div className="flex items-center gap-2 overflow-hidden">
-              <div className="bg-green-100 p-1 rounded-md shrink-0">
-                <Globe className="h-3 w-3 text-green-600" />
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-y-auto bg-slate-50/30">
+        <div className="p-4 space-y-4">
+          
+          {/* Active Context - Current Tab Info */}
+          <div className="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200/60 shadow-sm ring-1 ring-black/[0.02]">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="bg-primary/10 p-2 rounded-lg shrink-0">
+                <Globe className="h-3.5 w-3.5 text-primary" />
               </div>
               <div className="flex flex-col min-w-0">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter leading-none">Scanning Site</span>
-                <span className="text-[11px] font-medium text-slate-700 truncate">nature.com/articles/s41586...</span>
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight leading-none">Scanning Context</span>
+                <span className="text-[11px] font-semibold text-slate-700 truncate max-w-[160px]">Nature.com | Article s41586</span>
               </div>
             </div>
-            <Button variant="outline" size="sm" className="h-6 text-[9px] px-2 font-bold bg-slate-50 border-slate-200">
-              <ExternalLink className="h-2.5 w-2.5 mr-1" />
-              DASHBOARD
+            <Button variant="outline" size="sm" className="h-7 text-[9px] px-2.5 font-bold bg-white border-slate-200 hover:bg-slate-50 rounded-lg">
+              <ExternalLink className="h-3 w-3 mr-1.5" />
+              PORTAL
             </Button>
           </div>
 
+          {/* Scanner Component */}
           <ImageScanner />
+          
         </div>
       </main>
 
-      {/* Extension Footer */}
-      <footer className="p-3 border-t bg-white shrink-0">
-        <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-          <div className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
-            <span>v1.0.0-PRO</span>
+      {/* Extension Footer - Status Bar */}
+      <footer className="px-4 py-3 border-t bg-white shrink-0 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
           </div>
-          <div className="flex items-center gap-3">
-            <button className="hover:text-primary transition-colors">Docs</button>
-            <Separator orientation="vertical" className="h-3" />
-            <button className="hover:text-primary transition-colors">Support</button>
-          </div>
+          <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">System Ready</span>
+        </div>
+        
+        <div className="flex items-center gap-4 text-[9px] font-bold text-slate-400 uppercase tracking-tight">
+          <button className="hover:text-primary transition-colors">Documentation</button>
+          <Separator orientation="vertical" className="h-3" />
+          <button className="hover:text-primary transition-colors">v1.0.0</button>
         </div>
       </footer>
     </div>
