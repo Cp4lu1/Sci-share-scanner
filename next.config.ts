@@ -1,30 +1,16 @@
+
 import type {NextConfig} from 'next';
 
+/** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
+  // Required for Chrome Extensions (Static site generation)
   output: 'export',
+  // Required as Chrome Extensions cannot fetch images from external servers easily
   images: {
     unoptimized: true,
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**',
-      },
-    ],
   },
+  // Ensure the build output is clean for the extension folder
+  distDir: 'out',
 };
 
 export default nextConfig;
