@@ -1,7 +1,8 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Loader2, Grid, Filter, RefreshCcw, LayoutGrid, Globe } from "lucide-react";
+import { Search, Loader2, Grid, Filter, RefreshCcw, LayoutGrid, Globe, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ImageCard, ImageStatus } from "./ImageCard";
 import { generatePHash, compareHashes } from "@/lib/phash";
@@ -59,13 +60,12 @@ export function ImageScanner() {
         toast({
           variant: "destructive",
           title: "Scan Failed",
-          description: "Make sure you have granted permissions and are on a valid webpage."
+          description: "Make sure permissions are granted."
         });
         setIsScanning(false);
         return;
       }
     } else {
-      // Mock data for development preview if not in extension context
       detectedAssets = [
         { url: "https://picsum.photos/seed/sci1/800/600", width: 800, height: 600 },
         { url: "https://picsum.photos/seed/sci1/800/600", width: 800, height: 600 },
@@ -77,7 +77,7 @@ export function ImageScanner() {
     if (detectedAssets.length === 0) {
       toast({
         title: "No Figures Found",
-        description: "Could not detect any scientific figures on this page."
+        description: "Could not detect scientific assets on this page."
       });
       setIsScanning(false);
       return;
@@ -104,7 +104,6 @@ export function ImageScanner() {
       }
     }
 
-    // Similarity Cross-Analysis
     const analyzed = [...processed];
     for (let i = 0; i < analyzed.length; i++) {
       setProgress(50 + ((i + 1) / analyzed.length) * 50);
@@ -141,73 +140,92 @@ export function ImageScanner() {
   const transformedCount = images.filter(img => img.status === 'transformed').length;
 
   return (
-    <div className="space-y-4 animate-in fade-in duration-500">
-      <div className="space-y-3">
+    <div className="space-y-4 animate-in fade-in duration-700 slide-in-from-bottom-2">
+      <div className="space-y-4">
         <Button
           onClick={startScan}
           disabled={isScanning}
-          className="w-full bg-primary hover:bg-primary/90 shadow-md py-6 text-sm font-bold h-12"
+          className="w-full bg-primary hover:bg-primary/90 shadow-lg py-7 text-sm font-black h-14 rounded-xl group transition-all"
         >
           {isScanning ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-3 h-5 w-5 animate-spin" />
           ) : (
-            <Search className="mr-2 h-4 w-4" />
+            <Search className="mr-3 h-5 w-5 group-hover:scale-110 transition-transform" />
           )}
-          {isScanning ? "Processing Tab Assets..." : "Analyze Current Tab"}
+          {isScanning ? "Processing Assets..." : "Analyze Current Tab"}
         </Button>
+
+        {/* Discover Link Requested by User */}
+        <div className="flex flex-col items-center">
+          <a 
+            href="https://sci-share.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 hover:text-primary transition-colors group uppercase tracking-widest"
+          >
+            Discover more features at sci-share.com
+            <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+          </a>
+        </div>
         
         {images.length > 0 && !isScanning && (
           <Button
-            variant="outline"
+            variant="ghost"
             onClick={() => setImages([])}
-            className="w-full h-8 text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-slate-200"
+            className="w-full h-8 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:bg-slate-100/80"
           >
             <RefreshCcw className="mr-2 h-3 w-3" />
-            Clear Analysis
+            Reset Analysis
           </Button>
         )}
       </div>
 
       {isScanning && (
-        <div className="space-y-2 p-3 rounded-lg border border-primary/20 bg-primary/5">
-          <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-primary">
-            <span>Perceptual Hashing</span>
+        <div className="space-y-3 p-4 rounded-xl border border-primary/20 bg-primary/5 backdrop-blur-sm">
+          <div className="flex justify-between text-[11px] font-black uppercase tracking-[0.15em] text-primary">
+            <span className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+              </span>
+              Perceptual Hashing
+            </span>
             <span>{Math.round(progress)}%</span>
           </div>
-          <Progress value={progress} className="h-1.5" />
+          <Progress value={progress} className="h-2 rounded-full overflow-hidden bg-primary/10" />
         </div>
       )}
 
       {images.length > 0 && !isScanning && (
-        <div className="grid grid-cols-3 gap-2">
-          <div className="flex flex-col items-center p-2 rounded-lg bg-slate-100/50 border border-slate-200">
-            <LayoutGrid className="h-3 w-3 text-slate-500 mb-1" />
-            <span className="text-lg font-bold leading-none">{images.length}</span>
-            <span className="text-[8px] uppercase font-bold text-slate-400 mt-1">Found</span>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="flex flex-col items-center p-3 rounded-xl bg-slate-100/40 border border-slate-200/60 shadow-sm">
+            <LayoutGrid className="h-4 w-4 text-slate-400 mb-1.5" />
+            <span className="text-xl font-black text-slate-800 leading-none">{images.length}</span>
+            <span className="text-[9px] uppercase font-black text-slate-400 mt-1.5 tracking-tight">Assets</span>
           </div>
-          <div className="flex flex-col items-center p-2 rounded-lg bg-destructive/5 border border-destructive/10">
-            <Filter className="h-3 w-3 text-destructive mb-1" />
-            <span className="text-lg font-bold text-destructive leading-none">{duplicatesCount}</span>
-            <span className="text-[8px] uppercase font-bold text-destructive mt-1">Duplicates</span>
+          <div className="flex flex-col items-center p-3 rounded-xl bg-destructive/5 border border-destructive/10 shadow-sm">
+            <Filter className="h-4 w-4 text-destructive/70 mb-1.5" />
+            <span className="text-xl font-black text-destructive leading-none">{duplicatesCount}</span>
+            <span className="text-[9px] uppercase font-black text-destructive/60 mt-1.5 tracking-tight">Dupes</span>
           </div>
-          <div className="flex flex-col items-center p-2 rounded-lg bg-yellow-50 border border-yellow-200">
-            <Grid className="h-3 w-3 text-yellow-600 mb-1" />
-            <span className="text-lg font-bold text-yellow-600 leading-none">{transformedCount}</span>
-            <span className="text-[8px] uppercase font-bold text-yellow-700 mt-1">Transformed</span>
+          <div className="flex flex-col items-center p-3 rounded-xl bg-amber-50 border border-amber-200/50 shadow-sm">
+            <Grid className="h-4 w-4 text-amber-600/70 mb-1.5" />
+            <span className="text-xl font-black text-amber-600 leading-none">{transformedCount}</span>
+            <span className="text-[9px] uppercase font-black text-amber-600/60 mt-1.5 tracking-tight">Transf</span>
           </div>
         </div>
       )}
 
       {images.length > 0 && (
-        <div className="space-y-3 pt-2">
-          <div className="flex items-center gap-2">
-            <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 whitespace-nowrap">
-              Asset Map
+        <div className="space-y-4 pt-2">
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 whitespace-nowrap">
+              Asset Discovery
             </span>
-            <div className="h-px bg-slate-200 flex-1" />
+            <div className="h-px bg-slate-200/60 flex-1" />
           </div>
           
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             {images.map((img) => (
               <ImageCard key={img.id} {...img} />
             ))}
@@ -216,13 +234,13 @@ export function ImageScanner() {
       )}
 
       {!isScanning && images.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-12 px-6 rounded-2xl border border-dashed border-slate-200 bg-slate-50/50">
-          <div className="bg-white p-4 rounded-full shadow-sm mb-4">
-            <Globe className="h-8 w-8 text-slate-300" />
+        <div className="flex flex-col items-center justify-center py-16 px-8 rounded-3xl border border-dashed border-slate-200 bg-slate-50/50 shadow-inner">
+          <div className="bg-white p-5 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.05)] mb-6">
+            <Globe className="h-10 w-10 text-slate-300" />
           </div>
-          <h3 className="text-xs font-bold text-slate-600 text-center leading-tight uppercase tracking-widest">Awaiting Analysis</h3>
-          <p className="text-[10px] text-slate-400 text-center mt-3 leading-relaxed">
-            Open a scientific journal or data-rich page, then click scan to analyze visual integrity.
+          <h3 className="text-[11px] font-black text-slate-600 text-center leading-tight uppercase tracking-[0.25em]">Awaiting Analysis</h3>
+          <p className="text-[11px] text-slate-400 text-center mt-4 leading-relaxed font-medium">
+            Open a scientific article and click the button above to verify visual data integrity across the entire page.
           </p>
         </div>
       )}
