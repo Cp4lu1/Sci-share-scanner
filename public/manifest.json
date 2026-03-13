@@ -1,9 +1,8 @@
-
 {
   "manifest_version": 3,
   "name": "Sci-Share Scanner",
   "version": "1.0.0",
-  "description": "Scientific image integrity and duplicate detection tool.",
+  "description": "Advanced image analysis and duplicate detection for scientific assets.",
   "permissions": [
     "activeTab",
     "scripting"
@@ -21,7 +20,7 @@
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "background": {
-    "service_worker": "background.js"
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
   }
 }

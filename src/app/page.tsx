@@ -1,4 +1,3 @@
-
 "use client";
 
 import { PopupUI } from "@/components/extension/PopupUI";
