@@ -1,3 +1,4 @@
+
 "use client";
 
 import { ImageScanner } from "@/components/scanner/ImageScanner";
