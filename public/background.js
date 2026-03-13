@@ -1,4 +1,4 @@
-// Chrome Extension Background Service Worker
+// Background service worker for Sci-Share Scanner
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('Sci-Share Scanner Extension Installed');
+  console.log('Sci-Share Scanner extension installed.');
 });

@@ -1,10 +1,15 @@
-
 const fs = require('fs');
 const path = require('path');
 
 const outDir = path.join(__dirname, '../out');
 
+/**
+ * Chrome Extensions do not allow folders starting with underscores (like _next).
+ * This script renames the folder and updates all references in the HTML/CSS/JS files.
+ */
 function fixDirectory(dir) {
+  if (!fs.existsSync(dir)) return;
+  
   const files = fs.readdirSync(dir);
 
   files.forEach((file) => {
@@ -31,10 +36,6 @@ function fixDirectory(dir) {
   });
 }
 
-console.log('Fixing Chrome Extension folder structure...');
-if (fs.existsSync(outDir)) {
-  fixDirectory(outDir);
-  console.log('Done! You can now load the "out" folder as an unpacked extension.');
-} else {
-  console.error('Build directory "out" not found. Run "npm run build" first.');
-}
+console.log('Applying Chrome Extension compatibility fixes...');
+fixDirectory(outDir);
+console.log('Done! You can now load the "out" folder as an unpacked extension.');
